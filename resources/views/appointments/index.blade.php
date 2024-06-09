@@ -8,7 +8,7 @@
                 <svg class="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M3 5a1 1 0 0 1 1-1h4a1 1 0 0 1 0 2H5v10h10v-4a1 1 0 0 1 2 0v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a1 1 0 0 1 1-1z" clip-rule="evenodd" />
                 </svg>
-                Add Doctor
+                Add Appointment
             </a>
 
         </div>
@@ -27,19 +27,23 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead>
                             <tr class="bg-gray-100">
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Specialization</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Experience</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Doctor's Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Appointment Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Group name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
                             @foreach ($appointments as $appointment)
+                            
                                 <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $appointment->id }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $appointment->name }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $appointment->specialization }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $appointment->experience }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $appointment->patient->name }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $appointment->doctor->name }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $appointment->appointment_time }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $appointment->riskCategory->category.' - '.$appointment->riskCategory->description  }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $appointment->notes }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <a href="{{ route('appointments.edit', $appointment->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-2">Edit</a>
                                         <form action="{{ route('appointments.destroy', $appointment->id) }}" method="POST" style="display: inline;">

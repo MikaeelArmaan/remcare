@@ -18,28 +18,40 @@ class CreateAppointmentRequest extends FormRequest
     // Define validation rules dynamically
     public function rules()
     {
-        return [
+        $rules = [
             'doctor_id' => 'required',
             'patient_id' => 'required',
-            'appointment_time' => [
+            'risk_category_id' => 'required',
+        ];
+        // Check appointment_time rule only if appointment_time input is given
+        if ($this->has('appointment_time') && !empty($this->input('appointment_time'))) {
+            $rules['appointment_time'] = [
                 'required',
                 'date',
                 'after:now',
-                new UniqueDoctorAppointment($request->doctor_id, $request->appointment_time)
-            ],
-            'risk_category_id' => 'required',
-        ];
+                new UniqueDoctorAppointment($this->request->get('doctor_id'),
+                $this->request->get('appointment_time'),
+                isset($this->appointment)?$this->appointment->id:null)
+            ];
+        }
+        return $rules;
     }
 
     // Define custom validation messages
     public function messages()
     {
-        return [
+        $message = [
             'doctor_id.required' => 'Please select Doctor',
             'patient_id.required' => 'Please select Patient',
-            'appointment_time.required' => 'Appointment date is required',
-            'appointment_time.after' => 'The appointment date must be a future date',
-            'risk_category_id.required' => 'Risk Category is required',
         ];
+        if ($this->has('appointment_time') && !empty($this->input('appointment_time'))) {
+            $message +=[
+                'appointment_time.required' => 'The appointment date and time is required.',
+                'appointment_time.date' => 'The appointment date and time must be a valid date.',
+                'appointment_time.after' => 'The appointment date and time must be in the future.',
+                'appointment_time.unique_doctor_appointment' => 'An appointment for this doctor at the same time already exists.'
+            ];
+        }
+        return $message;
     }
 }

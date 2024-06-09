@@ -14,7 +14,7 @@
             </div>
 
             <div class="px-6 py-4">
-                <form method="POST" action="{{ route('appointments.update', $appointments->id) }}">
+                <form method="POST" action="{{ route('appointments.update', $appointment->id) }}">
                     @csrf
                     @method('PUT')
                     @include('appointments.fields')

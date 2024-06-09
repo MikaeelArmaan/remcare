@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('appointments', function (Blueprint $table) {
             // Rename the 'purpose' column to 'notes'
             $table->renameColumn('purpose', 'notes');
-
+            $table->text('notes')->nullable()->change();
             // Add the 'risk_category_id' column
             $table->unsignedBigInteger('risk_category_id')->nullable();
 
