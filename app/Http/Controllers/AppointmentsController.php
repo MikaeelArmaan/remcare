@@ -33,14 +33,17 @@ class AppointmentsController extends Controller
 
 
     // Display a listing of appointments
-    public function index()
+    public function index(Request $request)
     {
         $appointments = $this->appointmentRepository->all();
+        if($request->ajax() || $request->expectsJson()){
+            return response()->json($appointments->toArray());
+        }
         return view('appointments.index', compact('appointments'));
     }
 
     // Show the form for creating a new appointment
-    public function create()
+    public function create(Request $request)
     {
         $doctors        = $this->doctorsRepository->all();
         $patients       = $this->patientsRepository->all();

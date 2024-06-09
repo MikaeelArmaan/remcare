@@ -15,7 +15,7 @@ class AppointmentFactory extends Factory
         return [
             'doctor_id' => \App\Models\Doctors::factory(),
             'patient_id' => \App\Models\Patient::factory(),
-            'appointment_time' => $this->faker->dateTimeBetween('+1 day', '+1 month'),
+            'appointment_time' => $this->faker->dateTimeBetween('+1 day', '+2 month'),
             'notes' => $this->faker->sentence(),
             'risk_category_id' => RiskCategory::all()->random()->id
         ];
