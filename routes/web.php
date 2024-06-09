@@ -6,14 +6,13 @@ use App\Http\Controllers\PatientController;
 use App\Http\Controllers\AppointmentsController;
 use App\Http\Controllers\DoctorsController;
 use App\Http\Controllers\RiskCategoryController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -54,6 +53,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/riskcategories/{riskcategory}', [RiskCategoryController::class, 'update'])->name('riskcategories.update');
     Route::delete('/riskcategories/{riskcategory}', [RiskCategoryController::class, 'destroy'])->name('riskcategories.destroy');
     //Route::resource('risk_categories', RiskCategoryController::class);
+
+   
+
 });
 
 require __DIR__.'/auth.php';

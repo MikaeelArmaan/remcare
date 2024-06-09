@@ -57,4 +57,32 @@ class PatientController extends Controller
         return redirect()->route('patients.index')
                          ->with('success', 'Patient deleted successfully.');
     }
+
+
+    public function getPatientsByRiskGroup()
+    {
+        $riskCategories = $this->riskc ::all();
+
+        $data = [];
+
+        foreach ($riskCategories as $category) {
+            $count = Patient::where('risk_category_id', $category->id)->count();
+            $data[$category->name] = $count;
+        }
+
+        return response()->json($data);
+    }
+
+    public function getPatientsWaitingByWeekMonth()
+    {
+        // Implement logic to fetch total patients waiting by week and month
+        // Example:
+        $data = [
+            'January' => [10, 15, 20, 12], // Example data for January (replace with actual data)
+            'February' => [8, 13, 18, 10], // Example data for February (replace with actual data)
+            // Add more months as needed
+        ];
+
+        return response()->json($data);
+    }
 }
