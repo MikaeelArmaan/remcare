@@ -44,22 +44,44 @@ class AppointmentRepository extends BaseRepository
 
     public function getTotalPatientsWaitingByWeekAndMonth()
     {
-        // Group by week and month, and count appointments for each risk category
-        $data = $this->model
-            ->join('risk_categories', 'appointments.risk_category_id', '=', 'risk_categories.id')
-            ->select(
-                'risk_categories.id',
-                'risk_categories.category as risk_category',
-                DB::raw('WEEK(appointments.appointment_time) as week_number'),
-                DB::raw('MONTHNAME(appointments.appointment_time) as month_label'),
-                DB::raw('COUNT(*) as total_patients')
-            )
-            ->groupBy('risk_categories.id', 'risk_category', 'week_number', 'month_label')
-            ->orderBy('risk_categories.id', 'asc')
-            ->orderBy('month_label', 'asc')
-            ->orderBy('week_number', 'asc')
+        $barChartData =$this->model->selectRaw('
+                risk_category_id,
+                YEAR(appointment_time) as year,
+                MONTH(appointment_time) as month,
+                WEEK(appointment_time) as week,
+                COUNT(*) as total_patients
+            ')
+            ->groupBy('risk_category_id', 'year', 'month', 'week')
             ->get();
+        return $formattedData = $this->formatChartData($barChartData);
+    }
 
-        return $data;
+    private function formatChartData($data)
+    {
+        $formatted = [];
+
+        foreach ($data as $item) {
+            $riskCategoryId = $item->riskcategory->category;
+            $year = $item->year;
+            $month = Carbon::createFromDate($year, $item->month)->format('F');
+            $week = 'Week ' . $item->week;
+
+            if (!isset($formatted[$riskCategoryId])) {
+                $formatted[$riskCategoryId] = [
+                    'risk_category' => $riskCategoryId, // Assuming you have risk category names or descriptions
+                    'data' => [],
+                ];
+            }
+
+            if (!isset($formatted[$riskCategoryId]['data'][$week])) {
+                $formatted[$riskCategoryId]['data'][$week] = [
+                    'month' => $month,
+                    'total_patients' => 0,
+                ];
+            }
+
+            $formatted[$riskCategoryId]['data'][$week]['total_patients'] += $item->total_patients;
+        }
+        return array_values($formatted); // Resetting keys for JSON response
     }
 }

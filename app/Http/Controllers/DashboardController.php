@@ -28,7 +28,6 @@ class DashboardController extends Controller
     {
         $pieData = $this->appointmentRepository->getPercentagesByRiskCategory();
         $barData = $this->appointmentRepository->getTotalPatientsWaitingByWeekAndMonth();
-        dd($barData);
         return view('charts.dashboard', compact('pieData', 'barData'));
     }
     

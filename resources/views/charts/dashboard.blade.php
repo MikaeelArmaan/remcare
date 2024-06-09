@@ -23,11 +23,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Example data (simulate data you might fetch from the backend)
         var pieData = @json($pieData);
-        var barData = @json($barData);
-
-        // Prepare data for the pie chart
         var pieChartData = {
             labels: [],
             datasets: [{
@@ -37,7 +33,6 @@
             }]
         };
 
-        // Populate pie chart data
         pieData.forEach(function(item) {
             pieChartData.labels.push(item.category);
             pieChartData.datasets[0].data.push(item.percentage.toFixed(2)); // Round to 2 decimal places
@@ -62,52 +57,42 @@
             }
         });
 
-// Prepare data for the bar chart
+var data = @json($barData);
 var chartData = {
-    labels: [], // Array to hold labels (month and week)
-    datasets: [] // Array to hold datasets (each risk category)
-};
-
-// Iterate through the fetched data to populate chartData
-barData.forEach(function(item) {
-    var label = item.month_label + ' - Week ' + item.week_number;
-    if (!chartData.labels.includes(label)) {
-        chartData.labels.push(label); // Push unique labels (month - week)
-    }
-
-    var dataset = chartData.datasets.find(function(dataset) {
-        return dataset.label === item.month_label; // Check if dataset exists for month
-    });
-
-    if (!dataset) {
-        dataset = {
-            label: item.month_label,
-            backgroundColor: '#' + (Math.random().toString(16) + '000000').substring(2,8), // Random color
-            data: [] // Initialize data array for the dataset
+            labels: [],
+            datasets: []
         };
-        chartData.datasets.push(dataset);
-    }
+data.forEach(function(item) {
+            var dataset = {
+                label: 'Risk Category ' + item.risk_category,
+                data: [],
+                backgroundColor: '#' + Math.floor(Math.random()*16777215).toString(16), // Random color
+            };
 
-    dataset.data.push(item.total_patients); // Push patient count to the dataset
-});
+            Object.keys(item.data).forEach(function(week) {
+                chartData.labels.push(item.data[week].month + ' - ' + week);
+                dataset.data.push(item.data[week].total_patients);
+            });
 
-// Render the bar chart using Chart.js
-var ctx = document.getElementById('barChart').getContext('2d');
-var barChart = new Chart(ctx, {
-    type: 'bar',
-    data: chartData,
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'top',
-            },
-            title: {
-                display: true,
-                text: 'Patients Count by Month and Week'
+            chartData.datasets.push(dataset);
+        });
+// Render the chart using Chart.js
+        var ctx = document.getElementById('barChart').getContext('2d');
+        var barChart = new Chart(ctx, {
+            type: 'bar',
+            data: chartData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Total Patients Waiting by Week and Month in Each Risk Category Group'
+                    }
+                }
             }
-        }
-    }
-});
+        });
     </script>
 </x-app-layout>
