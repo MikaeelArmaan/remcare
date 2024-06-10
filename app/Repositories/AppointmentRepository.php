@@ -52,6 +52,7 @@ class AppointmentRepository extends BaseRepository
                 COUNT(*) as total_patients
             ')
             ->groupBy('risk_category_id', 'year', 'month', 'week')
+            ->orderBy('week')
             ->get();
         return $formattedData = $this->formatChartData($barChartData);
     }

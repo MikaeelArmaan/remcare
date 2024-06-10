@@ -70,7 +70,10 @@ data.forEach(function(item) {
             };
 
             Object.keys(item.data).forEach(function(week) {
-                chartData.labels.push(item.data[week].month + ' - ' + week);
+                let label = item.data[week].month + ' - ' + week;
+                if (!chartData.labels.includes(label)) {
+                    chartData.labels.push(label);
+                }
                 dataset.data.push(item.data[week].total_patients);
             });
 
