@@ -21,10 +21,7 @@ class PatientController extends Controller
     public function index(Request $request)
     {
         $patients = $this->patientsRepository->all();
-        dd($request->ajax());
-        if ($request->ajax()) {
-            return response()->json($patients, 200);
-        }
+        
         return view('patients.index', compact('patients'));
     }
 
@@ -36,10 +33,9 @@ class PatientController extends Controller
     public function store(CreatePatientRequest  $request)
     {
         // Validation passed, proceed to store the patient
-        $validatedData = $request->validated();
-
+       $validatedData = $request->validated();
         try {
-            $patient = Patient::create($validatedData);
+            $patient = $this->patientsRepository->create($validatedData);
             return redirect()->route('patients.index')->with('success', 'Patient created successfully.');
         } catch (\Exception $e) {
             return back()->withInput()->withErrors(['error' => 'Failed to create patient.']);
@@ -54,11 +50,11 @@ class PatientController extends Controller
 
     public function update(CreatePatientRequest  $request, Patient $patient)
     {
-        // Validation passed, proceed to update the patient
+        
         $validatedData = $request->validated();
 
         try {
-            $patient->update($validatedData);
+            $patient->update( $request->all());
             return redirect()->route('patients.index')->with('success', 'Patient updated successfully.');
         } catch (\Exception $e) {
             return back()->withInput()->withErrors(['error' => 'Failed to update patient.']);
@@ -71,13 +67,6 @@ class PatientController extends Controller
 
         return redirect()->route('patients.index')
                          ->with('success', 'Patient deleted successfully.');
-    }
-
-
-    public function getPatientsByRiskGroup()
-    {
-        $allAppointments = $this->appointmentRepository->getPatientByRiskCategory();
-        return response()->json($allAppointments);
     }
 
 }

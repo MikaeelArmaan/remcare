@@ -9,6 +9,7 @@
         "laravel/framework": "^11.9",
         "laravel/jetstream": "^5.1",
         "laravel/passport": "^12.2",
+        "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9"
     },
     "require-dev": {
@@ -24,7 +25,10 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+            "files": [
+                    "app/helper/helpers.php"
+            ]
         }
     },
     "autoload-dev": {
