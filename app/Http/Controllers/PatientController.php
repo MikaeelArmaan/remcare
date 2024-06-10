@@ -4,12 +4,27 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Patient;
 use App\Http\Requests\CreatePatientRequest;
+use App\Repositories\PatientsRepository;
+use App\Repositories\AppointmentRepository;
 
 class PatientController extends Controller
 {
-    public function index()
+    public function __construct(PatientsRepository $patientsRepository ,
+                                AppointmentRepository $appointmentRepository
+                                )
     {
-        $patients = Patient::all();
+        $this->patientsRepository       = $patientsRepository;
+        $this->appointmentRepository    = $appointmentRepository;
+    }
+
+
+    public function index(Request $request)
+    {
+        $patients = $this->patientsRepository->all();
+        dd($request->ajax());
+        if ($request->ajax()) {
+            return response()->json($patients, 200);
+        }
         return view('patients.index', compact('patients'));
     }
 
@@ -61,28 +76,8 @@ class PatientController extends Controller
 
     public function getPatientsByRiskGroup()
     {
-        $riskCategories = $this->riskc ::all();
-
-        $data = [];
-
-        foreach ($riskCategories as $category) {
-            $count = Patient::where('risk_category_id', $category->id)->count();
-            $data[$category->name] = $count;
-        }
-
-        return response()->json($data);
+        $allAppointments = $this->appointmentRepository->getPatientByRiskCategory();
+        return response()->json($allAppointments);
     }
 
-    public function getPatientsWaitingByWeekMonth()
-    {
-        // Implement logic to fetch total patients waiting by week and month
-        // Example:
-        $data = [
-            'January' => [10, 15, 20, 12], // Example data for January (replace with actual data)
-            'February' => [8, 13, 18, 10], // Example data for February (replace with actual data)
-            // Add more months as needed
-        ];
-
-        return response()->json($data);
-    }
 }

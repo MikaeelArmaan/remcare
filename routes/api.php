@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\PatientController;
 
-Route::get('/patients-by-risk-group', [PatientController::class, 'getPatientsByRiskGroup']);
-Route::get('/patients-waiting-by-week-month', [PatientController::class, 'getPatientsWaitingByWeekMonth']);
+//Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('patients', PatientController::class);
+//});

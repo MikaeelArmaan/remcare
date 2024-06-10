@@ -25,15 +25,11 @@ class AppointmentRepository extends BaseRepository
 
     public function getPercentagesByRiskCategory()
     {
-        $percentages = $this->model->join('risk_categories', 'appointments.risk_category_id', '=', 'risk_categories.id')
-            ->select('risk_categories.id', 'risk_categories.category','risk_categories.description', DB::raw('COUNT(*) as total_appointments'))
-            ->groupBy('risk_categories.id', 'risk_categories.category')
-            ->orderBy('risk_categories.id')
-            ->get();
+        $patientByGroup = $this->getPatientByRiskCategory();
 
-        $totalAppointments = $percentages->sum('total_appointments');
+        $totalAppointments = $patientByGroup->sum('total_appointments');
 
-        $percentages = $percentages->map(function ($item) use ($totalAppointments) {
+        $percentages = $patientByGroup->map(function ($item) use ($totalAppointments) {
             $item['percentage'] = round(($item['total_appointments'] / $totalAppointments) * 100, 2);
             return $item;
         });
@@ -84,5 +80,17 @@ class AppointmentRepository extends BaseRepository
             $formatted[$riskCategoryId]['data'][$week]['total_patients'] += $item->total_patients;
         }
         return array_values($formatted); // Resetting keys for JSON response
+    }
+
+    public function getPatientByRiskCategory()
+    {
+        $patientByGroup = $this->model->join('risk_categories', 'appointments.risk_category_id', '=', 'risk_categories.id')
+            ->select('risk_categories.id', 'risk_categories.category','risk_categories.description', DB::raw('COUNT(*) as total_appointments'))
+            ->groupBy('risk_categories.id', 'risk_categories.category')
+            ->orderBy('risk_categories.id')
+            ->get();
+
+        
+        return $patientByGroup;
     }
 }
