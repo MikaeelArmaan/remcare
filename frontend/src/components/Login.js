@@ -1,23 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { AuthContext } from '../contexts/AuthContext';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const { login } = useContext(AuthContext);
+    const [error, setError] = useState(null);
+    
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault(); // Prevents default form submission behavior
 
         try {
             const response = await axios.post('http://localhost:8000/api/login', {
-                email: email,
-                password: password
+              email: email,
+              password: password
             });
-            console.log(response.data); // Handle token storage or further actions
-        } catch (error) {
-            console.error(error);
+      
+            login(response.data.token); // Assuming response.data contains token
+            navigate('/dashboard'); // Redirect to dashboard after successful login
+          } catch (error) {
+            if (error.response && error.response.status === 401) {
+                setError('Invalid email or password. Please try again.');
+              } else {
+                console.error('Login error:', error);
+                setError('An unexpected error occurred. Please try again later.');
+              }
+          }
         }
-    };
+    
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -25,6 +39,12 @@ const Login = () => {
                 <div>
                     <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
                 </div>
+                {error && (
+                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                        <strong className="font-bold">Error:</strong>
+                        <span className="block sm:inline"> {error}</span>
+                    </div>
+                    )}
                 <form className="mt-8 space-y-6" onSubmit={handleLogin}>
                     <input type="hidden" name="remember" value="true" />
                     <div className="rounded-md shadow-sm -space-y-px">
