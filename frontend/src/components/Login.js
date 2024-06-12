@@ -1,12 +1,12 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../contexts/AuthContext';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { login } = useContext(AuthContext);
+    const { isAuthenticated, login } = useContext(AuthContext);
     const [error, setError] = useState(null);
     
     const navigate = useNavigate();
@@ -31,7 +31,10 @@ const Login = () => {
               }
           }
         }
-    
+
+    if (isAuthenticated) {
+        return <Navigate to="/dashboard" replace />;
+    }
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">

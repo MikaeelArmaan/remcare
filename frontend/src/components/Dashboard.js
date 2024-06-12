@@ -92,6 +92,16 @@ const Dashboard = () => {
                             size: 16
                         }
                     }
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 10,
+                        top: 10,
+                        bottom: 10
+                    }
                 }
             },
         });
@@ -140,6 +150,16 @@ const Dashboard = () => {
                             size: 16
                         }
                     }
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 10,
+                        top: 10,
+                        bottom: 10
+                    }
                 }
             }
         });
@@ -148,12 +168,12 @@ const Dashboard = () => {
     return (
         <div className="p-4">
             <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="px-5">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
+                <div className="">
                     <canvas id="pie-chart" className="bg-white rounded-lg shadow-md my-5 py-2"></canvas>
                 </div>
-                <div className="px-5">
-                    <canvas id="bar-chart" className="bg-white rounded-lg shadow-md my-5 py-2"></canvas>
+                <div className="">
+                    <canvas id="bar-chart" className="bg-white rounded-lg shadow-md my-5 py-2" ></canvas>
                 </div>
             </div>
         </div>
